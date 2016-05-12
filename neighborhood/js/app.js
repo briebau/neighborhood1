@@ -20,6 +20,8 @@ function initMap() {
        google.maps.event.trigger(map, "resize");
        map.setCenter(center); 
     });
+
+    
 }
 
 function appViewModel() {
@@ -161,7 +163,7 @@ function appViewModel() {
 // Initialize Google map, perform initial deal search on a city.
     infowindow = new google.maps.InfoWindow({maxWidth: 300});
     getGroupons('Athens-ga');
-    getGrouponLocations();
+    getGrouponLocations();  
   
 
 // Use API to get deal data and store the info as objects in an array
@@ -347,8 +349,8 @@ function appViewModel() {
       map.setZoom(10);
     }
   };
-  mapInitialize();
-  }
+
+   }
 
 //custom binding highlights the search text on focus
 
