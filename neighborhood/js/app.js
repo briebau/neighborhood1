@@ -1,3 +1,27 @@
+function initMap() {
+  city = new google.maps.LatLng(33.9519, -83.3576);
+    map = new google.maps.Map(document.getElementById('map-canvas'), {
+          center: city,
+          zoom: 10,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.LEFT_CENTER,
+            style: google.maps.ZoomControlStyle.SMALL
+          },
+          streetViewControlOptions: {
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+            },
+          mapTypeControl: false,
+          panControl: false
+        });
+    clearTimeout(self.mapRequestTimeout);
+
+    google.maps.event.addDomListener(window, "resize", function() {
+       var center = map.getCenter();
+       google.maps.event.trigger(map, "resize");
+       map.setCenter(center); 
+    });
+}
+
 function appViewModel() {
   var self = this;
   var map, city, infowindow;
@@ -135,33 +159,10 @@ function appViewModel() {
   }, 8000);
 
 // Initialize Google map, perform initial deal search on a city.
-  function mapInitialize() {
-    city = new google.maps.LatLng(33.9519, -83.3576);
-    map = new google.maps.Map(document.getElementById('map-canvas'), {
-          center: city,
-          zoom: 10,
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.LEFT_CENTER,
-            style: google.maps.ZoomControlStyle.SMALL
-          },
-          streetViewControlOptions: {
-            position: google.maps.ControlPosition.LEFT_BOTTOM
-            },
-          mapTypeControl: false,
-          panControl: false
-        });
-    clearTimeout(self.mapRequestTimeout);
-
-    google.maps.event.addDomListener(window, "resize", function() {
-       var center = map.getCenter();
-       google.maps.event.trigger(map, "resize");
-       map.setCenter(center); 
-    });
-
     infowindow = new google.maps.InfoWindow({maxWidth: 300});
     getGroupons('Athens-ga');
     getGrouponLocations();
-  }
+  
 
 // Use API to get deal data and store the info as objects in an array
   function getGroupons(location) {
@@ -346,7 +347,7 @@ function appViewModel() {
       map.setZoom(10);
     }
   };
-
+  mapInitialize();
   }
 
 //custom binding highlights the search text on focus
@@ -360,3 +361,4 @@ ko.bindingHandlers.selectOnFocus = {
       };
 
 ko.applyBindings(new appViewModel());
+
