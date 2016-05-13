@@ -1,5 +1,11 @@
-function initMap() {
-  city = new google.maps.LatLng(33.9519, -83.3576);
+//Error handling if Google Maps fails to load
+  this.mapRequestTimeout = setTimeout(function() {
+    $('#map-canvas').html('We are having trouble loading Google Maps. Please refresh your browser and try again.');
+  }, 8000);
+
+// Initialize Google map, perform initial deal search on a city.
+  function initMap() {
+    city = new google.maps.LatLng(33.9519, -83.3576);
     map = new google.maps.Map(document.getElementById('map-canvas'), {
           center: city,
           zoom: 10,
@@ -20,10 +26,11 @@ function initMap() {
        google.maps.event.trigger(map, "resize");
        map.setCenter(center); 
     });
-
+    ko.applyBindings(new appViewModel());
+    infowindow = new google.maps.InfoWindow({maxWidth: 300});
     
-}
-
+  }
+  
 function appViewModel() {
   var self = this;
   var map, city, infowindow;
@@ -154,18 +161,11 @@ function appViewModel() {
       self.toggleSymbol('hide');
     }
   };
-
-  //Error handling if Google Maps fails to load
-  this.mapRequestTimeout = setTimeout(function() {
-    $('#map-canvas').html('We are having trouble loading Google Maps. Please refresh your browser and try again.');
-  }, 8000);
-
-// Initialize Google map, perform initial deal search on a city.
-    infowindow = new google.maps.InfoWindow({maxWidth: 300});
-    getGroupons('Athens-ga');
-    getGrouponLocations();  
   
+  getGroupons('Athens-ga');
+    getGrouponLocations();
 
+  
 // Use API to get deal data and store the info as objects in an array
   function getGroupons(location) {
     var grouponUrl = "https://partner-api.groupon.com/deals.json?tsToken=US_AFF_0_203644_212556_0&filters=category:food-and-drink&limit=30&offset=0&division_id=";
@@ -255,12 +255,13 @@ function appViewModel() {
       });
       //add bounce animation to markers
       marker.addListener('click', toggleBounce);
- 
+    
+
     function toggleBounce() {
       marker.setAnimation(google.maps.Animation.BOUNCE);
       setTimeout(function(){ marker.setAnimation(null); }, 750);
       }
-    
+
       self.mapMarkers.push({marker: marker, content: contentString});
 
       self.dealStatus(self.numDeals() + ' food and drink deals found near ' + self.searchLocation());
@@ -277,7 +278,7 @@ function appViewModel() {
     });
   }
 
-// map and array
+// Clear markers from map and array
   function clearMarkers() {
     $.each(self.mapMarkers(), function(key, value) {
       value.marker.setMap(null);
@@ -349,8 +350,8 @@ function appViewModel() {
       map.setZoom(10);
     }
   };
+  }
 
-   }
 
 //custom binding highlights the search text on focus
 
@@ -362,5 +363,4 @@ ko.bindingHandlers.selectOnFocus = {
         }
       };
 
-ko.applyBindings(new appViewModel());
 
