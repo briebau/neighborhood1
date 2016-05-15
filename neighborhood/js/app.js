@@ -1,3 +1,7 @@
+//creates global map var 
+var map, city, infowindow;
+
+
 //Error handling if Google Maps fails to load
   this.mapRequestTimeout = setTimeout(function() {
     $('#map-canvas').html('We are having trouble loading Google Maps. Please refresh your browser and try again.');
@@ -13,6 +17,7 @@
             position: google.maps.ControlPosition.LEFT_CENTER,
             style: google.maps.ZoomControlStyle.SMALL
           },
+
           streetViewControlOptions: {
             position: google.maps.ControlPosition.LEFT_BOTTOM
             },
@@ -20,20 +25,20 @@
           panControl: false
         });
     clearTimeout(self.mapRequestTimeout);
+     ko.applyBindings(new appViewModel());
 
     google.maps.event.addDomListener(window, "resize", function() {
        var center = map.getCenter();
        google.maps.event.trigger(map, "resize");
        map.setCenter(center); 
     });
-    ko.applyBindings(new appViewModel());
+   
     infowindow = new google.maps.InfoWindow({maxWidth: 300});
     
   }
   
 function appViewModel() {
-  var self = this;
-  var map, city, infowindow;
+  var self = this;  
   var grouponLocations = [];
   var grouponReadableNames = [];
 
@@ -54,12 +59,15 @@ function appViewModel() {
   //Hold the current location's lat & lng - useful for re-centering map
   this.currentLat = ko.observable(33.9519);
   this.currentLng = ko.observable(-83.3576);
+ 
 
    // When a deal on the list is clicked, go to corresponding marker and open its info window.
   this.goToMarker = function(clickedDeal) {
+
     var clickedDealName = clickedDeal.dealName;
     for(var key in self.mapMarkers()) {
       if(clickedDealName === self.mapMarkers()[key].marker.title) {
+        google.maps.event.trigger(marker, 'click');
         map.panTo(self.mapMarkers()[key].marker.position);
         map.setZoom(14);
         infowindow.setContent(self.mapMarkers()[key].content);
@@ -68,8 +76,9 @@ function appViewModel() {
         self.mobileShow(false);
         self.searchStatus('');
       }
-    }
+          }
   };
+
 
   // Handle the input given when user searches for deals in a location
   this.processLocationSearch = function() {
@@ -161,9 +170,9 @@ function appViewModel() {
       self.toggleSymbol('hide');
     }
   };
-  
+  //initialize initial deal
   getGroupons('Athens-ga');
-    getGrouponLocations();
+  getGrouponLocations();
 
   
 // Use API to get deal data and store the info as objects in an array
@@ -251,12 +260,12 @@ function appViewModel() {
       var marker = new google.maps.Marker({
         position: geoLoc,
         title: thisRestaurant,
-        map: map
+        map: map,
+        animation: google.maps.Animation.DROP
       });
       //add bounce animation to markers
       marker.addListener('click', toggleBounce);
     
-
     function toggleBounce() {
       marker.setAnimation(google.maps.Animation.BOUNCE);
       setTimeout(function(){ marker.setAnimation(null); }, 750);
@@ -274,6 +283,7 @@ function appViewModel() {
          map.setCenter(marker.position);
          infowindow.open(map, marker);
          map.panBy(0, -150);
+
        });
     });
   }

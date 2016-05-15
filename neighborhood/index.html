@@ -38,7 +38,7 @@
     <div>
       <p class="waiting" data-bind="html: loadImg"></p>
       <ul id="results-list" data-bind="visible: toggleSymbol() === 'hide', foreach: filteredList">
-        <li data-bind="click: $parent.goToMarker">
+        <li data-bind="click: $parent.goToMarker" class="bounce">
           <h4 data-bind="text: dealName"></h4>
           <p class="address" data-bind="html: dealAddress"></p>
           <p data-bind="text: dealShortBlurb"></p>
@@ -84,7 +84,7 @@
   <script  src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script  src="js/app.js"></script>  
   <script ="" src="js/jquery.autocomplete.js"></script>  
-  <script src="https://maps.googleapis.com/maps/api/js?libraries=places?key=AIzaSyCVzYqt4JIDK3C_xMQcNssaEKeDUxf45aA&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
   
 </body>
 </html>
