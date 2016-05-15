@@ -2,10 +2,6 @@
 var map, city, infowindow;
 
 
-//Error handling if Google Maps fails to load
-  this.mapRequestTimeout = setTimeout(function() {
-    $('#map-canvas').html('We are having trouble loading Google Maps. Please refresh your browser and try again.');
-  }, 8000);
 
 // Initialize Google map, perform initial deal search on a city.
   function initMap() {
@@ -24,8 +20,7 @@ var map, city, infowindow;
           mapTypeControl: false,
           panControl: false
         });
-    clearTimeout(self.mapRequestTimeout);
-     ko.applyBindings(new appViewModel());
+    ko.applyBindings(new appViewModel());
 
     google.maps.event.addDomListener(window, "resize", function() {
        var center = map.getCenter();
@@ -41,6 +36,7 @@ function appViewModel() {
   var self = this;  
   var grouponLocations = [];
   var grouponReadableNames = [];
+  var marker=[];
 
   this.grouponDeals = ko.observableArray([]); //iinitializes list of deals
   this.filteredList = ko.observableArray([]); //list filtered by search keyword search options
@@ -67,7 +63,7 @@ function appViewModel() {
     var clickedDealName = clickedDeal.dealName;
     for(var key in self.mapMarkers()) {
       if(clickedDealName === self.mapMarkers()[key].marker.title) {
-        google.maps.event.trigger(marker, 'click');
+        google.maps.event.trigger(self.mapMakers, 'click');        
         map.panTo(self.mapMarkers()[key].marker.position);
         map.setZoom(14);
         infowindow.setContent(self.mapMarkers()[key].content);
@@ -75,11 +71,10 @@ function appViewModel() {
         map.panBy(0, -150);
         self.mobileShow(false);
         self.searchStatus('');
-      }
+              };
           }
   };
-
-
+  
   // Handle the input given when user searches for deals in a location
   this.processLocationSearch = function() {
     //Need to use a jQuery selector instead of KO binding because this field is affected by the autocomplete plugin.  The value inputted does not seem to register via KO.
@@ -287,6 +282,7 @@ function appViewModel() {
        });
     });
   }
+  
 
 // Clear markers from map and array
   function clearMarkers() {
